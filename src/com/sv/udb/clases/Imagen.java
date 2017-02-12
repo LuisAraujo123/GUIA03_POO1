@@ -18,7 +18,7 @@ public class Imagen extends javax.swing.JPanel {
     private String path;
     
 public Imagen(String direccion) {
-this.setSize(150, 170); //se selecciona el tamaño del panel
+this.setSize(180, 170); //se selecciona el tamaño del panel
 this.path = direccion;
 }
 

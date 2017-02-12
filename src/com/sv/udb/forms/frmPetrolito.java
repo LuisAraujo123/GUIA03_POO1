@@ -6,6 +6,20 @@
 package com.sv.udb.forms;
 
 import com.sv.udb.clases.Imagen;
+import com.sv.udb.clases.Registro;
+import com.sv.udb.clases.Tanques;
+import com.sv.udb.clases.ventas;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -16,6 +30,11 @@ public class frmPetrolito extends javax.swing.JFrame {
     /**
      * Creates new form frmPetrolito
      */
+    List<Tanques> lstTanq;
+    List<Registro> lstRegi;
+    Timer timer[];
+    double text[];
+    double cont[];
     public frmPetrolito() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -28,8 +47,91 @@ public class frmPetrolito extends javax.swing.JFrame {
         Imagen img3 = new Imagen("com/sv/udb/images/especial.png");
         pnlEspecial.add(img3);
         pnlEspecial.repaint();
+        this.poblardata();
+        cont = new double[3];
+        cont[0] = 0;
+        cont[1] = 0;
+        cont[2] = 0;
+        timer = new Timer[3];
+        text = new double[3];
+        this.calcularPor();
+        this.timer[0] = new Timer (10, new ActionListener ()
+        {
+            public void actionPerformed(ActionEvent e)
+            {   
+                Timer(0, lblPorD);
+            }
+        });
+        this.timer[0].start();
+        
+        this.timer[1] = new Timer (10, new ActionListener ()
+        {
+            public void actionPerformed(ActionEvent e)
+            {   
+                Timer(1, lblPorR);
+            }
+        });
+        this.timer[1].start();
+        
+        this.timer[2] = new Timer (10, new ActionListener ()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                Timer(2, lblPorE);
+            }
+        });
+        this.timer[2].start();
     }
-
+    
+    private void poblardata() {
+        ventas obje = new ventas();
+        this.lstTanq = new ArrayList<>();
+        this.lstTanq = obje.getDataTanques();
+        this.lstRegi = new ArrayList<>();
+        this.lstRegi = obje.getDataRegistros();
+    }
+    
+    private void Timer(int indice, JLabel lbl)
+    {
+        if (cont[indice] <= text[indice])
+                {
+                    if (cont[indice] >= text[indice]-1)
+                    {
+                        cont[indice] = cont[indice] + 0.01;
+                        DecimalFormat formateador = new DecimalFormat("###.##");
+                        lbl.setText(formateador.format(cont[indice])+"%");
+                        lbl.setText(formateador.format(text[indice])+"%");
+                        if (cont[indice]-text[indice] == 0)
+                        {
+                            
+                            timer[indice].stop();
+                        }
+                    }
+                    else
+                    {
+                        DecimalFormat formateador = new DecimalFormat("###.##");
+                        lbl.setText(formateador.format(cont[indice])+"%");
+                        cont[indice] = cont[indice] + 1;
+                    }
+                }
+    }
+    
+   private void calcularPor() {
+       double maxD = Double.parseDouble(this.lstTanq.get(0).getMaximo());
+       double maxR = Double.parseDouble(this.lstTanq.get(1).getMaximo());
+       double maxE = Double.parseDouble(this.lstTanq.get(2).getMaximo());
+       double actD = Double.parseDouble(this.lstTanq.get(0).getActual());
+       double actR = Double.parseDouble(this.lstTanq.get(1).getActual());
+       double actE = Double.parseDouble(this.lstTanq.get(2).getActual());
+       DecimalFormat formateador = new DecimalFormat("###.##");
+       text[0] = Double.parseDouble(formateador.format(100 - (maxD - actD)/10));
+       text[1] = Double.parseDouble(formateador.format(100 - (maxR - actR)/10));
+       text[2] = Double.parseDouble(formateador.format(100 - (maxE - actE)/10));
+       /*this.lblPorD.setText(formateador.format((100 - (maxD - actD)/10))+"%");
+       this.lblPorR.setText(formateador.format((100 - (maxR - actR)/10))+"%");
+       this.lblPorE.setText(formateador.format((100 - (maxE - actE)/10))+"%");*/
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -44,7 +146,7 @@ public class frmPetrolito extends javax.swing.JFrame {
         pnlDiesel = new javax.swing.JPanel();
         lblPorD = new javax.swing.JLabel();
         pnlRegular = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        lblPorR = new javax.swing.JLabel();
         pnlEspecial = new javax.swing.JPanel();
         lblPorE = new javax.swing.JLabel();
         pnlCompra = new javax.swing.JPanel();
@@ -52,19 +154,27 @@ public class frmPetrolito extends javax.swing.JFrame {
         txtCliente = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         cmbGaso = new javax.swing.JComboBox<>();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
+        rdGalo = new javax.swing.JRadioButton();
+        rdDin = new javax.swing.JRadioButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtIngre = new javax.swing.JTextField();
         btnPagar = new javax.swing.JButton();
+        btnGenerar = new javax.swing.JButton();
+        txtAgreD = new javax.swing.JTextField();
+        txtAgreR = new javax.swing.JTextField();
+        txtAgreE = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        btnTanques = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "El petrolito", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Harlow Solid Italic", 0, 36))); // NOI18N
 
         pnlDiesel.setBorder(javax.swing.BorderFactory.createTitledBorder("Diesel"));
-        pnlDiesel.setPreferredSize(new java.awt.Dimension(150, 170));
+        pnlDiesel.setPreferredSize(new java.awt.Dimension(180, 170));
 
         lblPorD.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
         lblPorD.setText("100%");
@@ -74,9 +184,9 @@ public class frmPetrolito extends javax.swing.JFrame {
         pnlDieselLayout.setHorizontalGroup(
             pnlDieselLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlDieselLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap(39, Short.MAX_VALUE)
                 .addComponent(lblPorD)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(89, Short.MAX_VALUE))
         );
         pnlDieselLayout.setVerticalGroup(
             pnlDieselLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,29 +196,29 @@ public class frmPetrolito extends javax.swing.JFrame {
         );
 
         pnlRegular.setBorder(javax.swing.BorderFactory.createTitledBorder("Regular"));
-        pnlRegular.setPreferredSize(new java.awt.Dimension(150, 170));
+        pnlRegular.setPreferredSize(new java.awt.Dimension(180, 170));
 
-        jLabel2.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
-        jLabel2.setText("100%");
+        lblPorR.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
+        lblPorR.setText("100%");
 
         javax.swing.GroupLayout pnlRegularLayout = new javax.swing.GroupLayout(pnlRegular);
         pnlRegular.setLayout(pnlRegularLayout);
         pnlRegularLayout.setHorizontalGroup(
             pnlRegularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRegularLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel2)
-                .addContainerGap(72, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE)
+                .addComponent(lblPorR)
+                .addContainerGap(83, Short.MAX_VALUE))
         );
         pnlRegularLayout.setVerticalGroup(
             pnlRegularLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlRegularLayout.createSequentialGroup()
-                .addComponent(jLabel2)
+                .addComponent(lblPorR)
                 .addGap(0, 125, Short.MAX_VALUE))
         );
 
         pnlEspecial.setBorder(javax.swing.BorderFactory.createTitledBorder("Especial"));
-        pnlEspecial.setPreferredSize(new java.awt.Dimension(150, 170));
+        pnlEspecial.setPreferredSize(new java.awt.Dimension(180, 170));
 
         lblPorE.setFont(new java.awt.Font("Consolas", 1, 18)); // NOI18N
         lblPorE.setText("100%");
@@ -118,9 +228,9 @@ public class frmPetrolito extends javax.swing.JFrame {
         pnlEspecialLayout.setHorizontalGroup(
             pnlEspecialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlEspecialLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addContainerGap(42, Short.MAX_VALUE)
                 .addComponent(lblPorE)
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         pnlEspecialLayout.setVerticalGroup(
             pnlEspecialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -129,7 +239,9 @@ public class frmPetrolito extends javax.swing.JFrame {
                 .addGap(0, 125, Short.MAX_VALUE))
         );
 
-        pnlCompra.setBorder(javax.swing.BorderFactory.createTitledBorder("Realizar compra"));
+        pnlCompra.setBackground(new java.awt.Color(255, 204, 204));
+        pnlCompra.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED), "Realizar compra"));
+        pnlCompra.setForeground(new java.awt.Color(255, 255, 255));
 
         lblCliente.setText("Cliente:");
 
@@ -143,16 +255,16 @@ public class frmPetrolito extends javax.swing.JFrame {
 
         cmbGaso.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccione-", "Diesel", "Regular", "Especial" }));
 
-        buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setText("Por galones");
-        jRadioButton1.addActionListener(new java.awt.event.ActionListener() {
+        buttonGroup1.add(rdGalo);
+        rdGalo.setText("Por galones");
+        rdGalo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jRadioButton1ActionPerformed(evt);
+                rdGaloActionPerformed(evt);
             }
         });
 
-        buttonGroup1.add(jRadioButton2);
-        jRadioButton2.setText("Por dinero");
+        buttonGroup1.add(rdDin);
+        rdDin.setText("Por dinero");
 
         jLabel5.setText("Seleccione el tipo de compra:");
 
@@ -161,6 +273,11 @@ public class frmPetrolito extends javax.swing.JFrame {
         txtIngre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtIngreActionPerformed(evt);
+            }
+        });
+        txtIngre.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtIngreKeyPressed(evt);
             }
         });
 
@@ -188,9 +305,9 @@ public class frmPetrolito extends javax.swing.JFrame {
                             .addComponent(txtCliente)
                             .addComponent(cmbGaso, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(pnlCompraLayout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
+                        .addComponent(rdGalo)
                         .addGap(18, 18, 18)
-                        .addComponent(jRadioButton2))
+                        .addComponent(rdDin))
                     .addGroup(pnlCompraLayout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -216,8 +333,8 @@ public class frmPetrolito extends javax.swing.JFrame {
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(rdGalo)
+                    .addComponent(rdDin))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlCompraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel6)
@@ -227,33 +344,99 @@ public class frmPetrolito extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
+        btnGenerar.setText("Ver ventas");
+        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarActionPerformed(evt);
+            }
+        });
+
+        txtAgreD.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAgreDKeyPressed(evt);
+            }
+        });
+
+        txtAgreR.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAgreRKeyPressed(evt);
+            }
+        });
+
+        txtAgreE.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtAgreEKeyPressed(evt);
+            }
+        });
+
+        jLabel1.setText("*Para agregar galones inserte la cantidad y presione enter.");
+
+        btnTanques.setText("Ver combustible vendido");
+        btnTanques.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTanquesActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("*Si se ingresan mas de 2 decimales se aproximaran.");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pnlCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(pnlDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnlRegular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(pnlEspecial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnGenerar)
+                            .addGap(18, 18, 18)
+                            .addComponent(btnTanques))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(pnlDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtAgreD, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(pnlRegular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtAgreR, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGap(10, 10, 10)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtAgreE, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(pnlEspecial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnlDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlRegular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pnlEspecial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 221, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(pnlCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(pnlCompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(pnlDiesel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlRegular, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pnlEspecial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtAgreD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAgreR, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtAgreE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnGenerar)
+                            .addComponent(btnTanques))))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -267,32 +450,213 @@ public class frmPetrolito extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void limpiar() {
+        txtCliente.setText("");
+        txtIngre.setText("");
+        cmbGaso.setSelectedIndex(0);
+        rdDin.setSelected(false);
+        rdGalo.setSelected(false);
+    }
+    
+    private void actualizar(int indice) {
+        ventas obj = new ventas();
+        obj.ActualizarRegistro(lstRegi);
+        obj.ActualizarTanques(lstTanq);
+        calcularPor();
+        this.cont[indice] = 0;
+        this.timer[indice].start();
+        limpiar();
+    }
+    
     private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtClienteActionPerformed
 
-    private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
+    private void rdGaloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdGaloActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jRadioButton1ActionPerformed
+    }//GEN-LAST:event_rdGaloActionPerformed
 
     private void txtIngreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIngreActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtIngreActionPerformed
 
+    private String fechaSist() {
+        Calendar c1 = new GregorianCalendar();
+        String dia, mes, anio;
+        dia = String.valueOf(c1.get(Calendar.DATE));
+        mes =  String.valueOf(c1.get(Calendar.MONTH));
+        anio = String.valueOf(c1.get(Calendar.YEAR));
+        if (dia.length() == 1){
+            dia = "0"+dia;
+        }
+        if (mes.length() == 1){
+            mes = "0"+mes;
+        }
+            String fecha = dia + "/" + mes + "/" + anio;
+            return fecha;
+    }
+    
+    private void AgregarTanq(double cant, int indice) {
+        double nuevo = Double.parseDouble(this.lstTanq.get(indice).getActual()) + cant;
+        if (nuevo <= 1000)
+        {
+            DecimalFormat formateador = new DecimalFormat("###.##");
+            this.lstTanq.get(indice).setActual(formateador.format(nuevo));
+            ventas obj = new ventas();
+            obj.ActualizarTanques(this.lstTanq);
+            calcularPor();
+            this.cont[indice] = 0;
+            this.timer[indice].start();
+            JOptionPane.showMessageDialog(this, "Cantidad agregada correctamente!");
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(this, "El total de galones excede la capacidad del tanque!");
+        }
+    }
+    
     private void btnPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPagarActionPerformed
         // TODO add your handling code here:
-        if (! txtCliente.getText().isEmpty() && cmbGaso.getSelectedIndex() > 0 && !txtIngre.getText().isEmpty())
+        if (!txtCliente.getText().isEmpty() && cmbGaso.getSelectedIndex() > 0 && !txtIngre.getText().isEmpty())
         {
-            double ingre = Double.parseDouble(txtIngre.getText());
+            try {
+                double ingre = Double.parseDouble(txtIngre.getText());
+            if (rdGalo.isSelected()){
+                double total = ingre * Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getPrecio());
+                if ((Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getActual()) - ingre) > 0){
+                    DecimalFormat formateador = new DecimalFormat("###.##");
+                    JOptionPane.showMessageDialog(this, "El total a pagar es: $" +formateador.format(total));
+                    Registro obj = new Registro(txtCliente.getText(), formateador.format(ingre), formateador.format(total), cmbGaso.getSelectedItem().toString(), fechaSist());
+                    this.lstRegi.add(obj);
+                    this.lstTanq.get(cmbGaso.getSelectedIndex()-1).setActual(formateador.format((Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getActual())) - ingre));
+                    actualizar(cmbGaso.getSelectedIndex()-1);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(this, "Lo sentimos pero los galones del tanque son insuficientes para la transacción");
+                }
+                
+            }
+            else if (rdDin.isSelected())
+            {
+                double total = ingre / Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getPrecio());
+                if ((Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getActual()) - total) > 0) {
+                    DecimalFormat formateador = new DecimalFormat("###.##");
+                    JOptionPane.showMessageDialog(this, "Total de galones: " +formateador.format(total));
+                    Registro obj = new Registro(txtCliente.getText(), formateador.format(total), formateador.format(ingre), cmbGaso.getSelectedItem().toString(), fechaSist());
+                    this.lstRegi.add(obj);
+                    this.lstTanq.get(cmbGaso.getSelectedIndex()-1).setActual(formateador.format((Double.parseDouble(this.lstTanq.get(cmbGaso.getSelectedIndex()-1).getActual())) - total));
+                    actualizar(cmbGaso.getSelectedIndex()-1);
+                }
+                else 
+                {
+                    JOptionPane.showMessageDialog(this, "Lo sentimos pero los galones del tanque son insuficientes para la transacción");
+                }
+                
+            }
+            else
+            {
+                JOptionPane.showMessageDialog(this, "por favor seleccione un tipo de pago.");
+            }
             
+            
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Por favor solamente ingresa datos validos (números positivos).");
+            }
         }
     }//GEN-LAST:event_btnPagarActionPerformed
+
+    private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
+        // TODO add your handling code here:
+        frmVentas frmVent = new frmVentas();
+        frmVent.setVisible(true);
+    }//GEN-LAST:event_btnGenerarActionPerformed
+
+    private void txtAgreDKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAgreDKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            if (!txtAgreD.getText().isEmpty())
+            {
+                double ingre = Double.parseDouble(txtAgreD.getText());
+                this.AgregarTanq(ingre, 0);
+                this.txtAgreD.setText("");
+            }
+        }
+    }//GEN-LAST:event_txtAgreDKeyPressed
+
+    private void txtAgreRKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAgreRKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            if (!txtAgreR.getText().isEmpty())
+            {
+                double ingre = Double.parseDouble(txtAgreR.getText());
+                this.AgregarTanq(ingre, 1);
+                this.txtAgreR.setText("");
+            }
+        }
+    }//GEN-LAST:event_txtAgreRKeyPressed
+
+    private void txtAgreEKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAgreEKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
+            if (!txtAgreE.getText().isEmpty())
+            {
+                double ingre = Double.parseDouble(txtAgreE.getText());
+                this.AgregarTanq(ingre, 2);
+                this.txtAgreE.setText("");
+            }
+        }
+    }//GEN-LAST:event_txtAgreEKeyPressed
+
+    private void btnTanquesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTanquesActionPerformed
+        // TODO add your handling code here:
+        double cant[] = new double[3];
+        for (Registro temp : this.lstRegi)
+        {
+            if (temp.getFecha().equals(fechaSist()))
+            {
+                switch (temp.getTipo()){
+                    case "Diesel":
+                        cant[0] = cant[0] + Double.parseDouble(temp.getCantidad());
+                        break;
+                    case "Regular":
+                        cant[1] = cant[1] + Double.parseDouble(temp.getCantidad());
+                        break;
+                    case "Especial":
+                        cant[2] = cant[2] + Double.parseDouble(temp.getCantidad());
+                        break;
+                }
+                        
+            }
+        }
+        JOptionPane.showMessageDialog(this, "Total de combustible vendido hoy. \n"
+                + "Diesel: " + cant[0] + "\n"
+                        + "Regular: " + cant[1] + "\n"
+                                + "Especial: " + cant[2] );
+    }//GEN-LAST:event_btnTanquesActionPerformed
+
+    private void solonumeros(KeyEvent e) {
+    char caracter = e.getKeyChar();
+      // Verificar si la tecla pulsada no es un digito
+      if(((caracter < '0') || (caracter > '9')) && (caracter != '\b' /*corresponde a BACK_SPACE*/))
+      {
+         e.consume();  // ignorar el evento de teclado
+      }
+}
+    
+    
+    private void txtIngreKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIngreKeyPressed
+        // TODO add your handling code here:
+        this.solonumeros(evt);
+    }//GEN-LAST:event_txtIngreKeyPressed
 
     /**
      * @param args the command line arguments
@@ -330,23 +694,30 @@ public class frmPetrolito extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerar;
     private javax.swing.JButton btnPagar;
+    private javax.swing.JButton btnTanques;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JComboBox<String> cmbGaso;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JLabel lblCliente;
     private javax.swing.JLabel lblPorD;
     private javax.swing.JLabel lblPorE;
+    private javax.swing.JLabel lblPorR;
     private javax.swing.JPanel pnlCompra;
     private javax.swing.JPanel pnlDiesel;
     private javax.swing.JPanel pnlEspecial;
     private javax.swing.JPanel pnlRegular;
+    private javax.swing.JRadioButton rdDin;
+    private javax.swing.JRadioButton rdGalo;
+    private javax.swing.JTextField txtAgreD;
+    private javax.swing.JTextField txtAgreE;
+    private javax.swing.JTextField txtAgreR;
     private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtIngre;
     // End of variables declaration//GEN-END:variables
